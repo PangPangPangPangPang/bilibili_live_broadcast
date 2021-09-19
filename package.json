@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node esbuild.js && node ./build/index.js"
+    "start": "node esbuild.js && node ./build/index.js",
+    "build": "node esbuild.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +19,12 @@
   },
   "homepage": "https://github.com/PangPangPangPangPang/bilibili_live_broadcast#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.173",
     "@types/node": "^16.9.3",
     "esbuild": "^0.12.28",
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
