@@ -3,7 +3,7 @@ import net from 'net';
 import _ from 'lodash';
 import zlib from 'zlib';
 import { PacketType } from '@type/types';
-import { CmdType } from '@type/danmu';
+import { CmdType } from '@type/types';
 
 
 const max = 2000000000;

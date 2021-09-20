@@ -12,6 +12,7 @@
     "paths": {
       "@core/*": ["core/*"],
       "@type/*": ["type/*"],
+      "@utils/*": ["utils/*"],
     },                                 
   }
 }

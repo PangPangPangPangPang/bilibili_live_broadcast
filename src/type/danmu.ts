@@ -18,7 +18,7 @@ export interface FansMedal {
   target_id: number;
 }
 
-export interface Data {
+export interface Interact {
   contribution: Contribution;
   dmscore: number;
   fans_medal: FansMedal;
@@ -42,13 +42,3 @@ export interface RootObject {
   data: Data;
 }
 
-export enum CmdType {
-  DANMU_MSG = "DANMU_MSG",
-  SEND_GIFT = "SEND_GIFT",
-  WELCOME = "WELCOME",
-  WELCOME_GUARD = "WELCOME_GUARD",
-  SYS_MSG = "SYS_MSG",
-  PREPARING = "PREPARING",
-  LIVE = "LIVE",
-  INTERACT_WORD = "INTERACT_WORD",
-}
