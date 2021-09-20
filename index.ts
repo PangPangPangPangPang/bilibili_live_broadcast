@@ -16,7 +16,7 @@ async function main() {
   })
   bilibili.handleDanmu(CmdType.INTERACT_WORD, (info: Interact) => {
     if (info.msg_type === 1) {
-      console.log(`${info.uname} 进入乐直播间`.grey)
+      console.log(`${info.uname} 进入了直播间`.grey)
     }
   })
   bilibili.handleDanmu(CmdType.SEND_GIFT, (info: Gift) => {
