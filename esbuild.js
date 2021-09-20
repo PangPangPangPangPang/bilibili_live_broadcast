@@ -30,9 +30,9 @@ async function start(watch) {
     define: { ESBUILD: 'true' },
     mainFields: ['module', 'main'],
     platform: 'node',
-    target: 'node12.12',
+    // target: 'node12.12',
     outfile: 'build/index.js',
-    plugins: [envPlugin]
+    // plugins: [envPlugin]
   })
 }
 

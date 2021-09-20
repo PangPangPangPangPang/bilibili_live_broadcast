@@ -1,24 +1,35 @@
 import http from 'http';
 import net from 'net';
 import _ from 'lodash';
-import { Socket } from 'dgram';
-import { buffer, json } from 'stream/consumers';
 import zlib from 'zlib';
+import { PacketType } from '@type/types';
+import { CmdType } from '@type/danmu';
+
 
 const max = 2000000000;
 const min = 1000000000;
+
+type CallbackType = {
+  [key in CmdType]?: (data: any) => void;
+};
 
 export default class Bilibili {
   host = "livecmt-1.bilibili.com"
   port = 788
   roomID = 0
   socket: net.Socket = undefined;
+  callbacks: CallbackType = {}
   constructor() {
 
   }
   async start(id: string) {
     await this.getRoomID(id);
     this.createConnect();
+  }
+
+  handleDanmu(type: CmdType, callback: (data: any) => void) {
+    this.callbacks[type] = callback;
+
   }
   createConnect() {
     this.socket = net.createConnection({ port: this.port, host: this.host });
@@ -28,52 +39,66 @@ export default class Bilibili {
 
     })
     this.socket.on('data', (data) => {
-      const buf = data.readInt32BE(0)
-      const len = Number(buf.toString());
       const expr = Number(data.readInt32BE(8))
-      // console.log(expr)
       let body = data.subarray(16);
-      // if (expr === 5) {
-        zlib.inflate(body, (error, buffer) => {
-          if (error === null && buffer) {
-            let msg = buffer.subarray(16).toString()
-            // let sub = msg.substring(16)
-            try {
-              let invalid = [];
-              for (let index = 0; index < msg.length; index++) {
-                const c = msg[index];
-                if (c === '}' && index < msg.length) {
-                  const nextc = msg[index + 1];
-                  if (nextc !== "," && nextc !== "}" && nextc !== "\"") {
-                    invalid.push(index + 1);
-                    // console.log(msg[index + 1])
-                  }
-                }
-              }
-              let msgs = []
-              let prev = 0;
-              invalid.forEach(idx => {
-                msgs.push(msg.substring(prev, idx))
-                prev = idx + 16
-              })
+      switch (expr) {
+        case PacketType.ServerMsg:
+          this.handleMsg(body)
+          break;
+        case PacketType.ServerAuth:
+          break;
+        case PacketType.ServerHeartBeat:
+          break;
+        default:
+          break;
+      }
+    })
+  }
 
-              console.log(msgs)
-              msgs.forEach(item => {
-                console.log(JSON.parse(item))
-
-              })
-            } catch (error) {
-              console.log(error)
-
+  handleMsg(body: Buffer) {
+    zlib.inflate(body, (error, buffer) => {
+      if (error === null && buffer) {
+        let msg = buffer.subarray(16).toString()
+        let invalid = [];
+        for (let index = 0; index < msg.length; index++) {
+          const c = msg[index];
+          if (c === '}' && index < msg.length) {
+            const nextc = msg[index + 1];
+            if (nextc !== "," && nextc !== "}" && nextc !== "\"" && nextc !== "]") {
+              invalid.push(index + 1);
             }
-
+          }
+        }
+        let msgs = []
+        let prev = 0;
+        invalid.forEach(idx => {
+          msgs.push(msg.substring(prev, idx))
+          prev = idx + 16
+        })
+        msgs.forEach(item => {
+          try {
+            const obj = JSON.parse(item);
+            const cmd = _.get(obj, 'cmd')
+            const cb = this.callbacks[cmd];
+            if (cb) {
+              switch (cmd) {
+                case CmdType.INTERACT_WORD:
+                  cb(obj.data)
+                  break;
+                case CmdType.DANMU_MSG:
+                  cb(obj.info)
+                default:
+                  break;
+              }
+            } else {
+              console.log(obj)
+            }
+          } catch (error) {
           }
         })
-        //   const buf2 = data.readIntBE(16, len - 16)
-        //   console.log(buf2.toString())
-      // }
-
+      }
     })
+
   }
 
   getRoomID(id: string) {
@@ -94,12 +119,12 @@ export default class Bilibili {
 
   joinChannel() {
     const body = { roomid: this.roomID, uid: Math.floor(Math.random() * max + min) };
-    this.sendSocketData(0, 16, 1, 7, JSON.stringify(body))
+    this.sendSocketData(0, 16, 1, PacketType.ClientAuth, JSON.stringify(body))
   }
 
   keepHeartBeat() {
     setInterval(() => {
-      this.sendSocketData(0, 16, 1, 2, "");
+      this.sendSocketData(0, 16, 1, PacketType.ClientHeartBeat, "");
     }, 5000);
 
   }

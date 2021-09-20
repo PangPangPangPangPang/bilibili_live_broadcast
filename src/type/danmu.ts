@@ -1,0 +1,54 @@
+export interface Contribution {
+  grade: number;
+}
+
+export interface FansMedal {
+  anchor_roomid: number;
+  guard_level: number;
+  icon_id: number;
+  is_lighted: number;
+  medal_color: number;
+  medal_color_border: number;
+  medal_color_end: number;
+  medal_color_start: number;
+  medal_level: number;
+  medal_name: string;
+  score: number;
+  special: string;
+  target_id: number;
+}
+
+export interface Data {
+  contribution: Contribution;
+  dmscore: number;
+  fans_medal: FansMedal;
+  identities: number[];
+  is_spread: number;
+  msg_type: number;
+  roomid: number;
+  score: number;
+  spread_desc: string;
+  spread_info: string;
+  tail_icon: number;
+  timestamp: number;
+  trigger_time: number;
+  uid: number;
+  uname: string;
+  uname_color: string;
+}
+
+export interface RootObject {
+  cmd: CmdType;
+  data: Data;
+}
+
+export enum CmdType {
+  DANMU_MSG = "DANMU_MSG",
+  SEND_GIFT = "SEND_GIFT",
+  WELCOME = "WELCOME",
+  WELCOME_GUARD = "WELCOME_GUARD",
+  SYS_MSG = "SYS_MSG",
+  PREPARING = "PREPARING",
+  LIVE = "LIVE",
+  INTERACT_WORD = "INTERACT_WORD",
+}
