@@ -2,8 +2,6 @@ import Bilibili from "@core/bilibili";
 import { Interact } from "@type/danmu";
 import { Gift } from "@type/gift";
 import { CmdType } from "@type/types";
-// import { random } from "@utils/random";
-// import 'colors';
 
 async function main() {
   if (process.argv.length < 3) {
