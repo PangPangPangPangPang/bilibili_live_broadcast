@@ -15,7 +15,11 @@ M.setup = function(args)
 end
 
 M.run = function(args)
-    local handler = M.config.handler
+    local config = M.config
+    if config.job ~= nil then
+		print("Already start!")
+        return
+    end
 	if vim.fn.executable("node") ~= 1 then
 		print("Need install node!")
 		return
@@ -29,12 +33,21 @@ M.run = function(args)
 	local cmd = string.format("node %s/build/index.js %s", vim.g.bilibili_root, args)
 	local function print_stdout(_, data, _)
 		local msg = vim.fn.json_decode(data)
-		handler(msg)
+		config.handler(msg)
 	end
 	local function print_err(_, data, _)
 		local msg = vim.fn.json_decode(data)
 		require("notify")(actions[msg.msg], "error", { title = msg.type })
 	end
-	vim.fn.jobstart(cmd, { on_stdout = print_stdout, on_stderr = print_err })
+	local job_id = vim.fn.jobstart(cmd, { on_stdout = print_stdout, on_stderr = print_err })
+    config.job = job_id
+end
+M.stop = function()
+    local config = M.config
+    if config.job ~= nil then
+        vim.fn.jobstop(config.job)
+		print("Stopped!")
+        return
+    end
 end
 return M
