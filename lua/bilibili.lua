@@ -1,5 +1,5 @@
 local M = {}
-local actions = require("bilibili.utils").actions
+local actions = require("bilibili_live_broadcast.utils").actions
 
 M.config = {
 	handler = function(msg)
