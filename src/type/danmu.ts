@@ -1,3 +1,4 @@
+import { CmdType } from "@type/types";
 export interface Contribution {
   grade: number;
 }
@@ -39,6 +40,6 @@ export interface Interact {
 
 export interface RootObject {
   cmd: CmdType;
-  data: Data;
+  data: any;
 }
 

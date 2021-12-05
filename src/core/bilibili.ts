@@ -5,7 +5,6 @@ import zlib from 'zlib';
 import { PacketType } from '@type/types';
 import { CmdType } from '@type/types';
 
-
 const max = 2000000000;
 const min = 1000000000;
 
@@ -29,7 +28,6 @@ export default class Bilibili {
 
   handleDanmu(type: CmdType, callback: (data: any) => void) {
     this.callbacks[type] = callback;
-
   }
   createConnect() {
     this.socket = net.createConnection({ port: this.port, host: this.host });
