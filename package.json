@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "blessed": "^0.1.81",
+    "colors": "^1.4.0",
     "lodash": "^4.17.21"
   }
 }
